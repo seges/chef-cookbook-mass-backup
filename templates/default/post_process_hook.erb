@@ -1,0 +1,22 @@
+log="/var/log/charon.log"
+
+# pass configuration variables to charon
+# transmit the password through stdin to hide it from "ps ax"
+local CHARON="/usr/sbin/charon.ftp"
+local MAX_AGE_IN_DAYS="7"
+
+if [ ! -f $log ]; then
+touch $log
+fi
+stamp=`date`
+echo "[$stamp] charon NAME=$NAME, MAXAGE=$MAX_AGE_IN_DAYS, PASS=$STORAGE_FTP_PASSWORD, SERVER=$STORAGE_FTP_SERVER, USER=$STORAGE_FTP_USER, DIR=$STORAGE_FTP_DIR" >> $log
+
+
+echo -n "$STORAGE_FTP_PASSWORD" | $CHARON \
+--host "$STORAGE_FTP_SERVER" --user "$STORAGE_FTP_USER" \
+--readpassword \
+--dir "$STORAGE_FTP_DIR" \
+--maxage "$MAX_AGE_IN_DAYS" \
+--profile "$NAME"
+
+echo "[$stamp] charon finished NAME=$NAME, MAXAGE=$MAX_AGE_IN_DAYS, PASS=$STORAGE_FTP_PASSWORD, SERVER=$STORAGE_FTP_SERVER, USER=$STORAGE_FTP_USER, DIR=$STORAGE_FTP_DIR" >> $log

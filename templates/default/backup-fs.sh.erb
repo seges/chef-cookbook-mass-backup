@@ -1,0 +1,16 @@
+#!/bin/sh
+# / Usr / local / sbin / backup.sh
+# Run backup all profiles found in / etc / tartarus / and appropriate
+# Command line arguments on to tartarus (eg-i)
+
+log="/var/log/backup-fs.log"
+
+for profile in /etc/tartarus/*conf; do
+	if [ ! -f $log ]; then
+		touch $log
+	fi
+	stamp=`date`
+	echo "[$stamp] back $profile" >> $log
+	tartarus $* "$profile" >> $log 2>&1
+	echo "[$stamp] backed $profile" >> $log
+done

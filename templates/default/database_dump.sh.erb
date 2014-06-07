@@ -1,0 +1,33 @@
+STAMP=`date +%Y%m%d_%H%M%S1`
+
+function print_usage {
+        echo "Executes backup depending on the configuration and type. The algorithm executes backup function and stores the backup files either in 'tmp' of the destination or in the special backup directory which is backuped up later to a different (backup) server."
+        echo ""
+        echo "Usage: `basename $0` <config_file> [regular]"
+        echo "       config_file - contains at least 'dst' and 'name' variables + 'backup' function"
+        echo "       regular - if the value 'regular' is specified, the backup is performed into the location where regular backup takes files from. Otherwise the location is temporal and serves only for temporal backups"
+}
+
+if [ ${#@} -lt 1 ] ; then
+        print_usage
+        exit 1
+fi
+
+if [ ! -f "$1" ] ; then
+	echo "The configuration file '$1' does not exist"
+	exit 42
+fi
+
+. $1
+
+if [ "regular" == "$2" ]; then
+	dst="$dst/backup/db-dump"
+	rm $dst/*
+else
+	dst="$dst/tmp/db-dump"
+	if [ ! -x $dst ]; then
+		mkdir -p $dst
+	fi
+fi
+
+backup

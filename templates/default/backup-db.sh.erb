@@ -1,0 +1,20 @@
+#!/bin/bash
+
+
+list=`ls /home`
+
+log="/var/log/backup-db.log"
+
+for cfg in $list; do
+	cfgfile="/home/$cfg/backup/${cfg}_dump.conf"
+	
+	if [ -f $cfgfile ]; then
+		if [ ! -f $log ]; then
+			touch $log
+		fi
+		stamp=`date`
+		echo "[$stamp] processing backup config $cfgfile" >> $log
+		su -c "/usr/local/sbin/database_dump.sh $cfgfile regular" - $cfg >> $log 2>&1
+		echo "[$stamp] processed backup config $cfgfile" >> $log
+	fi
+done
