@@ -1,0 +1,14 @@
+name="<%= @name %>"
+dst="/home/<%= @name %>"
+
+function backup() {
+	<% @databases.each do |db,params| %>
+	vacuumlo <%= db %>
+
+	dump="$dst/<%= db %>_$STAMP.sql"
+	pg_dump -b -E UTF-8 <%= db %> > $dump 
+	bzip2 $dump
+
+	echo $STAMP
+	<% end %>
+}

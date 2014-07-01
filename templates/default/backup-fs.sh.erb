@@ -11,6 +11,6 @@ for profile in /etc/tartarus/*conf; do
 	fi
 	stamp=`date`
 	echo "[$stamp] back $profile" >> $log
-	tartarus $* "$profile" >> $log 2>&1
+	/usr/sbin/tartarus $* "$profile" >> $log 2>&1
 	echo "[$stamp] backed $profile" >> $log
 done

@@ -7,6 +7,10 @@
 # All rights reserved - Do Not Redistribute
 #
 
+# because of mounting backup server
+package "curlftpfs"
+
+
 ["backup-db.sh", "backup-fs.sh", "database_dump.sh"].each do |item|
   template "/usr/local/sbin/#{item}" do
     mode 00755
