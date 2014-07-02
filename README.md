@@ -1,45 +1,26 @@
 mass-backup Cookbook
 ====================
-TODO: Enter the cookbook description here.
+mass-backup cookbook is the extension over Tartarus and covers the installation of scheduled database (PostgreSQL currently) and filesystem backups.
 
-e.g.
-This cookbook makes your favorite breakfast sandwich.
 
 Requirements
 ------------
-TODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.
 
-e.g.
 #### packages
-- `toaster` - mass-backup needs toaster to brown your bagel.
+see metadata.rb
 
 Attributes
 ----------
-TODO: List your cookbook attributes here.
 
-e.g.
 #### mass-backup::default
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['mass-backup']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
+
+Tartarus configuration is required in order to successfully run the recipe.
+
+https://github.com/ffuenf/chef-tartarus
 
 Usage
 -----
 #### mass-backup::default
-TODO: Write usage instructions for each cookbook.
-
-e.g.
 Just include `mass-backup` in your node's `run_list`:
 
 ```json
@@ -51,12 +32,37 @@ Just include `mass-backup` in your node's `run_list`:
 }
 ```
 
+It installs required bash scripts that are responsible for the backup:
+- DB backup script - goes through users in the /home, and searches for "backup" directory where <name>_dump.conf files are executed in order to back up PostgreSQL. The configuration can be created with dedicated resource "mass_backup_db_backup"
+  - log file is written to /var/log/backup-db.log
+- Filesystem backup script - goes through defined tartarus backup configurations
+  - log file is written to /var/log/backup-fs.log
+
+Resource
+-----
+
+#### mass_backup_db_backup
+
+Example resource usage:
+
+```ruby
+mass_backup_db_backup "myuser" do
+  group "mygroup"
+  databases(
+    "mydb" => {
+      "vacuum" => "true"
+    }
+  )
+end
+```
+
+Creates backup configuration in /home/myuser/backup/mydb_dump.conf. The resulting dump is taken by FS backup and transfer using Tartarus to the configured location.
+
+
 Contributing
 ------------
-TODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.
 
-e.g.
-1. Fork the repository on Github
+1. Fork the repository on Github - https://github.com/seges/chef-cookbook-mass-backup
 2. Create a named feature branch (like `add_component_x`)
 3. Write your change
 4. Write tests for your change (if applicable)
@@ -65,4 +71,18 @@ e.g.
 
 License and Authors
 -------------------
-Authors: TODO: List authors
+Author:: Ladislav Gazo (<gazo@seges.sk>)
+Copyright:: 2014, Seges Ltd.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
