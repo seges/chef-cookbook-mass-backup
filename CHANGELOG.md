@@ -3,9 +3,13 @@ mass-backup CHANGELOG
 
 This file is used to list changes made in each version of the mass-backup cookbook.
 
-0.1.0
+1.0.0
 -----
-- [your_name] - Initial release of mass-backup
+- Ladislav Gazo - Initial release of mass-backup
+
+1.0.1
+-----
+- Ladislav Gazo - db_backup resource to create DB backup configuration
 
 - - -
 Check the [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) for help with Markdown.
